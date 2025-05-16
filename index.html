@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Book Age Verifier</title>
+    <title>Book Age Recommendation App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { font-family: Arial, sans-serif; background: #f6f8fa; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f7f9fa; margin: 0; padding: 0; }
         .container {
             max-width: 400px;
             margin: 80px auto;
@@ -17,11 +17,21 @@
         }
         .result {
             margin-top: 20px;
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: bold;
         }
+        label { display: block; margin-top: 15px; font-weight: 500; }
+        input[type="text"], input[type="number"] {
+            padding: 7px;
+            width: 80%;
+            font-size: 1em;
+            margin-top: 6px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
         button {
-            margin-top: 18px;
+            margin-top: 15px;
             padding: 10px 28px;
             background: #007BFF;
             color: #fff;
@@ -29,54 +39,53 @@
             border-radius: 5px;
             font-size: 1em;
             cursor: pointer;
+            transition: background 0.2s;
         }
-        button:hover {
-            background: #0056b3;
-        }
-        input[type="number"] {
-            padding: 8px;
-            width: 80%;
-            font-size: 1em;
-            margin-top: 10px;
-        }
-        label {
-            font-size: 1.1em;
-            font-weight: 500;
-        }
+        button:hover { background: #0056b3; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Book Age Verifier</h1>
-        <form id="ageForm">
-            <label for="yearInput">Enter Publication Year:</label><br>
-            <input type="number" id="yearInput" min="1450" max="2025" required placeholder="e.g. 2010"><br>
-            <button type="submit">Check Age</button>
+        <h1>Book Age Recommendation App</h1>
+        <form id="ageCheckForm">
+            <label for="bookTitle">Book Title:</label>
+            <input type="text" id="bookTitle" required placeholder="e.g. Harry Potter">
+            
+            <label for="minAge">Recommended Minimum Age:</label>
+            <input type="number" id="minAge" min="0" max="120" required placeholder="e.g. 12">
+            
+            <label for="yourAge">Your Age:</label>
+            <input type="number" id="yourAge" min="0" max="120" required placeholder="e.g. 14">
+            
+            <button type="submit">Check Eligibility</button>
         </form>
         <div class="result" id="result"></div>
     </div>
     <script>
-        document.getElementById('ageForm').addEventListener('submit', function(e){
+        document.getElementById('ageCheckForm').addEventListener('submit', function(e){
             e.preventDefault();
-            const year = parseInt(document.getElementById('yearInput').value, 10);
-            const currentYear = new Date().getFullYear();
-            let resultText = '';
-
-            if(isNaN(year) || year < 1450 || year > currentYear){
-                resultText = "Please enter a valid publication year.";
-            } else {
-                const age = currentYear - year;
-                let status = '';
-                if (age <= 1) {
-                    status = 'New';
-                } else if (age <= 10) {
-                    status = 'Recent';
-                } else {
-                    status = 'Old';
-                }
-                resultText = `This book is <b>${age}</b> year(s) old. Status: <span style="color:#007BFF">${status}</span>`;
+            const bookTitle = document.getElementById('bookTitle').value.trim();
+            const minAge = parseInt(document.getElementById('minAge').value, 10);
+            const yourAge = parseInt(document.getElementById('yourAge').value, 10);
+            const resultDiv = document.getElementById('result');
+            
+            if (!bookTitle || isNaN(minAge) || isNaN(yourAge)) {
+                resultDiv.textContent = "Please fill in all fields with valid numbers.";
+                resultDiv.style.color = "#d8000c";
+                return;
             }
-            document.getElementById('result').innerHTML = resultText;
+            if (minAge < 0 || yourAge < 0) {
+                resultDiv.textContent = "Ages cannot be negative!";
+                resultDiv.style.color = "#d8000c";
+                return;
+            }
+            if (yourAge >= minAge) {
+                resultDiv.innerHTML = `You are <b>eligible</b> to read "<b>${bookTitle}</b>".<br>(Recommended minimum age: <b>${minAge}</b>)`;
+                resultDiv.style.color = "#007BFF";
+            } else {
+                resultDiv.innerHTML = `Sorry, you need to be at least <b>${minAge}</b> years old to read "<b>${bookTitle}</b>".`;
+                resultDiv.style.color = "#d8000c";
+            }
         });
     </script>
 </body>
