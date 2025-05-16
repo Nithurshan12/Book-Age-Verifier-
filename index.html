@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Age Verifier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f6f8fa; margin: 0; padding: 0; }
+        .container {
+            max-width: 400px;
+            margin: 80px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        button {
+            margin-top: 18px;
+            padding: 10px 28px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input[type="number"] {
+            padding: 8px;
+            width: 80%;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        label {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Book Age Verifier</h1>
+        <form id="ageForm">
+            <label for="yearInput">Enter Publication Year:</label><br>
+            <input type="number" id="yearInput" min="1450" max="2025" required placeholder="e.g. 2010"><br>
+            <button type="submit">Check Age</button>
+        </form>
+        <div class="result" id="result"></div>
+    </div>
+    <script>
+        document.getElementById('ageForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            const year = parseInt(document.getElementById('yearInput').value, 10);
+            const currentYear = new Date().getFullYear();
+            let resultText = '';
+
+            if(isNaN(year) || year < 1450 || year > currentYear){
+                resultText = "Please enter a valid publication year.";
+            } else {
+                const age = currentYear - year;
+                let status = '';
+                if (age <= 1) {
+                    status = 'New';
+                } else if (age <= 10) {
+                    status = 'Recent';
+                } else {
+                    status = 'Old';
+                }
+                resultText = `This book is <b>${age}</b> year(s) old. Status: <span style="color:#007BFF">${status}</span>`;
+            }
+            document.getElementById('result').innerHTML = resultText;
+        });
+    </script>
+</body>
+</html>
